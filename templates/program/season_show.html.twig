@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wild Series |{% endblock %}
+
+{% block body %}
+    <article>
+        {# <img src="{{ program.poster }}" alt="{{ program.title }}"> #}
+        {# <h1>Saison {{ program.season.number }} - {{ season.program.title }}</h1> #}
+        {# <p>{{ program.synopsis }}</p> #}
+        {# <p>{{ program.category.name }}</p> #}
+        {{ program.title }}
+        {{ season.number }}
+                {% for episode in episodes %}
+            <h4>Episode {{ episode.number }} - {{ episode.title }}</h4>
+            <p>{{ episode.synopsis }}</p>
+        {% endfor %}
+        {# <a href="{{ path('program_show', { id: program.id }) }}">Voir la fiche</a> #}
+    </article>
+
+{% endblock %}
