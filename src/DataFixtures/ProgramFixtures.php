@@ -134,6 +134,11 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
             'title' => 'Umbrella Academy',
             'synopsis' => "À la mort de leur père, des frères et sœurs aux pouvoirs extraordinaires découvrent des secrets de famille traumatisants et une menace terrible qui plane sur l'humanité.",
             'category' => 'category_Action',
+        ],
+        [
+            'title' => 'Arcane',
+            'synopsis' => "Raconte l'intensification des tensions entre deux villes suite à l'apparition de nouvelles inventions qui menacent de provoquer une véritable révolution.",
+            'category' => 'category_Animation',
         ]
      ];
 
@@ -144,7 +149,9 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
             $program->setTitle($programData['title']);
             $program->setSynopsis($programData['synopsis']);
             $program->setCategory($this->getReference($programData['category']));
+            $this->addReference('program_' . $programData['title'], $program);
             $manager->persist($program);
+
         }
         $manager->flush();
     }
