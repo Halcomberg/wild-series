@@ -9,6 +9,8 @@ use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\EpisodeRepository;
 use App\Entity\Program;
+use App\Entity\Season;
+use App\Entity\Episode;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
@@ -28,7 +30,7 @@ class ProgramController extends AbstractController
     {
         $program = $programRepository->findOneBy(['id' => $programId]);
         // same as $program = $programRepository->find($id);
-        $seasons = $seasonRepository->findBy(['program' => $program], ['number' => 'ASC']);
+        // $seasons = $seasonRepository->findBy(['program' => $program], ['number' => 'ASC']);
         
         if (!$program) {
             throw $this->createNotFoundException(
@@ -36,7 +38,7 @@ class ProgramController extends AbstractController
             );
         }
 
-        return $this->render('program/show.html.twig', ['program' => $program, 'seasons' => $seasons]);
+        return $this->render('program/show.html.twig', ['program' => $program]);
     }
 
     #[Route('/{programId}/season/{seasonId}', name: 'season_show')]
@@ -44,8 +46,8 @@ class ProgramController extends AbstractController
     {
         $program = $programRepository->findOneBy(['id' => $programId]);
         $season = $seasonRepository->findOneBy(['program' => $program, 'id' => $seasonId]);
-        $episodes = $episodeRepository->findBy(['season' => $season], ['number' => 'ASC']);
+        // $episodes = $episodeRepository->findBy(['season' => $season], ['number' => 'ASC']);
 
-        return $this->render('program/season_show.html.twig', ['program' => $program, 'season' => $season, 'episodes' => $episodes]);
+        return $this->render('program/season_show.html.twig', ['program' => $program, 'season' => $season]);
     }
 }
