@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
@@ -11,6 +12,8 @@ use App\Repository\EpisodeRepository;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
+use App\Form\ProgramType;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
@@ -25,13 +28,36 @@ class ProgramController extends AbstractController
             ]);
     }
 
-    #[Route('/{programId}', methods: ['GET'], requirements: ['id'=>'\d+'], name: 'show')]
-    public function show(int $programId, ProgramRepository $programRepository, SeasonRepository $seasonRepository): Response
+    #[Route('/new', name: 'new')]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $program = $programRepository->findOneBy(['id' => $programId]);
-        // same as $program = $programRepository->find($id);
-        // $seasons = $seasonRepository->findBy(['program' => $program], ['number' => 'ASC']);
-        
+        // Create a new Category Object
+        $program = new Program();
+        // Create the associated Form
+        $form = $this->createForm(ProgramType::class, $program);
+        // Get data from HTTP request
+        $form->handleRequest($request);
+        // Was the form submitted ?
+        if ($form->isSubmitted()) {
+            // Deal with the submitted data
+            // For example : persiste & flush the entity
+            $entityManager->persist($program);
+            $entityManager->flush();            
+    
+            // Redirect to categories list
+            return $this->redirectToRoute('program_index');
+            // And redirect to a route that display the result
+        }
+        // Render the form
+
+        return $this->render('program/new.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{program}', methods: ['GET'], requirements: ['id'=>'\d+'], name: 'show')]
+    public function show(Program $program): Response
+    {
         if (!$program) {
             throw $this->createNotFoundException(
                 'No program with id : '.$id.' found in program\'s table.'
@@ -41,13 +67,15 @@ class ProgramController extends AbstractController
         return $this->render('program/show.html.twig', ['program' => $program]);
     }
 
-    #[Route('/{programId}/season/{seasonId}', name: 'season_show')]
-    public function showSeason(int $programId, int $seasonId, SeasonRepository $seasonRepository, EpisodeRepository $episodeRepository, ProgramRepository $programRepository): Response
+    #[Route('/{program}/season/{season}', name: 'season_show')]
+    public function showSeason(Program $program, Season $season): Response
     {
-        $program = $programRepository->findOneBy(['id' => $programId]);
-        $season = $seasonRepository->findOneBy(['program' => $program, 'id' => $seasonId]);
-        // $episodes = $episodeRepository->findBy(['season' => $season], ['number' => 'ASC']);
+         return $this->render('program/season_show.html.twig', ['program' => $program, 'season' => $season]);
+    }
 
-        return $this->render('program/season_show.html.twig', ['program' => $program, 'season' => $season]);
+    #[Route('/{program}/season/{season}/episode/{episode}', name: 'episode_show')]
+    public function showEpisode(Program $program, Season $season, Episode $episode): Response
+    {
+         return $this->render('program/episode_show.html.twig', ['program' => $program, 'season' => $season, 'episode' => $episode]);
     }
 }

@@ -3,17 +3,21 @@
 {% block title %}Wild Series | {{ program.title }}{% endblock %}
 
 {% block body %}
-    <article>
+    <article>        
         <img src="{{ program.poster }}" alt="{{ program.title }}">
-        <h1>Programme N°{{ program.id }} - {{ program.title }}</h1>
-        <p>{{ program.synopsis }}</p>
-        <p>Catégorie {{ program.category.name }}</p>
-        <h2>Liste des saisons pour {{ program.title }} :</h2>
-        {% for season in program.seasons %}
-            <h4>Saison {{ season.number }} - {{ season.year }}</h4>
-            <p>{{ season.description }}</p>
-            <a href="{{ path('program_season_show', { programId: program.id, seasonId: season.id }) }}">Voir les épisodes de la saison {{ season.number }}</a>
-        {% endfor %}
+        <div class="program-details">
+            <h1>Programme N°{{ program.id }} - {{ program.title }}</h1>
+            <p>{{ program.synopsis }}</p>
+            <p>Catégorie {{ program.category.name|capitalize }}</p>
+        </div>
+        <div>
+            <h2>Liste des saisons pour {{ program.title }} :</h2>
+            {% for season in program.seasons %}
+                <h4>Saison {{ season.number }} - {{ season.year }}</h4>
+                <p>{{ season.description }}</p>
+                <a href="{{ path('program_season_show', { program: program.id, season: season.id }) }}">Voir les épisodes de la saison {{ season.number }}</a>
+            {% endfor %}
+        </div>
     </article>
 
     <a href="{{ path('program_index') }}">
