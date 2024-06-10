@@ -6,7 +6,7 @@
     <article>
         <h1>Catégorie : {{ category.name }}</h1>
         <h2>Liste des série :</h2>
-        {% for program in programs %}
+        {% for program in category.programs %}
         <div>
             <h2>{{ program.id }} - {{ program.title }}</h2>
             <p>{{ program.synopsis }}</p>
@@ -17,6 +17,7 @@
     {% endfor %}
 
     </article>
+        {{ include('category/_delete_form.html.twig') }}
 
     <a href="{{ path('category_index') }}">
         Retour à la liste des catégories
