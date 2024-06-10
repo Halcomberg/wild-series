@@ -4,20 +4,16 @@
 
 {% block body %}
     <article>
-        {# <img src="{{ program.poster }}" alt="{{ program.title }}"> #}
-        {# <h1>Saison {{ program.season.number }} - {{ season.program.title }}</h1> #}
-        {# <p>{{ program.synopsis }}</p> #}
-        {# <p>{{ program.category.name }}</p> #}
+
         Nom de la série : {{ program.title }}
         <br>
         Saison n°{{ season.number }} <br>
         Liste des épisodes : <br>
         {% for episode in season.episodes %}
             <h4>Episode {{ episode.number }} - {{ episode.title }}</h4>
-            <p>{{ episode.synopsis }}</p>
-            
+            <a href="{{ path('program_episode_show', { program: program.id, season: season.id, episode: episode.id }) }}">Détail de l'épisode {{ episode.number }}</a>            
         {% endfor %}
-        <a href="{{ path('program_show', { programId: program.id }) }}">Revenir à la liste des saisons</a>
+        <a href="{{ path('program_show', { program: program.id }) }}">Revenir à la liste des saisons</a>
     </article>
 
 {% endblock %}

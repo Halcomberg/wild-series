@@ -1,3 +1,32 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: skyblue;
+    box-sizing: border-box;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #94A1A9;
+    clip-path: polygon(0 0, 100% 0, 100% 55%, 0 96%);
+    height: 10rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.navbar-brand {
+    font-size: 4.5rem;
+    font-family: 'Headliner No. 45';
+    padding: 0;
+    display: flex;
+}
+
+.logo-wild-series {
+    width: 4.5rem;
+}
+
+.navbar-collapse {
+    justify-content: space-around;
+    flex-grow: 0;
 }
