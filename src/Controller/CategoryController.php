@@ -53,25 +53,67 @@ class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/{categoryName}', name: 'show')]
-    public function show(string $categoryName, CategoryRepository $categoryRepository, ProgramRepository $programRepository): Response
-    {
-        $category = $categoryRepository->findOneBy(['name' => $categoryName]);
+    // #[Route('/{id}', name: 'show')]
+    // public function show(string $id, CategoryRepository $categoryRepository, ProgramRepository $programRepository): Response
+    // {
+    //     $category = $categoryRepository->findOneBy(['id' => $id]);
 
+    //     if (!$category) {
+    //         throw $this->createNotFoundException(
+    //             "Aucune catégorie avec l'ID ".$id
+    //         );
+    //     }
+
+    //     $programs = $programRepository->findBy(['category' => $category], ['id' => 'DESC'], 3, 0);
+
+    //     if (!$programs) {
+    //         throw $this->createNotFoundException(
+    //             'No program found in this category.'
+    //         );
+    //     }
+
+    //     return $this->render('category/show.html.twig', ['category' => $category, 'programs' => $programs]);
+    // }
+
+    #[Route('/{category}', methods: ['GET'], requirements: ['id'=>'\d+'], name: 'show')]
+    public function show(Category $category): Response
+    {
         if (!$category) {
             throw $this->createNotFoundException(
-                'Aucune catégorie nommée '.$categoryName
+                'No category with id : '.$id.' found in category\'s table.'
             );
         }
 
-        $programs = $programRepository->findBy(['category' => $category], ['id' => 'DESC'], 3, 0);
-
-        if (!$programs) {
-            throw $this->createNotFoundException(
-                'No program found in this category.'
-            );
-        }
-
-        return $this->render('category/show.html.twig', ['category' => $category, 'programs' => $programs]);
+        return $this->render('category/show.html.twig', ['category' => $category]);
     }
+
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Category $category, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('category_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('category/edit.html.twig', [
+            'category' => $category,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
+    {
+        // if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->get('_token'))) {
+            $entityManager->remove($category);
+            $entityManager->flush();
+        // }
+
+        return $this->redirectToRoute('category_index', [], Response::HTTP_SEE_OTHER);
+    }
+
 }

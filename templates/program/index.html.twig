@@ -6,7 +6,8 @@
 <h1>Index des séries :</h1>
     {% for program in programs %}
         <div>
-            <h2>{{ loop.index }} / {{ program.title }} - Catégorie : {{ program.category.name }}</h2>
+            <h2>{{ loop.index }} / {{ program.title }} - Catégorie : {{ program.category.name|default('Aucune catégorie attribuée') }}
+</h2>
             <img src="{{ program.poster }}" alt="{{ program.title }}" width=10% height=10%>
             <p>{{ program.synopsis }}</p>
             <a href="{{ path('program_show', { program: program.id }) }}">Voir la fiche</a>
