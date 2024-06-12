@@ -5,10 +5,8 @@
 {% block body %}
 <h1>Ajout d'une nouvelle série :</h1>
 
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button type="submit">Add program</button>
-{{ form_end(form) }}
+    {{ include('program/_form.html.twig', {'button_label': 'Add program'}) }}
+
 
 <a href="{{ path('program_index') }}">
     Retour à la liste des catégories

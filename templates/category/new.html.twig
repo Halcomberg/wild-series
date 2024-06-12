@@ -5,10 +5,8 @@
 {% block body %}
 <h1>Ajout d'une nouvelle catégorie :</h1>
 
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button type="submit">Add category</button>
-{{ form_end(form) }}
+    {{ include('category/_form.html.twig', {'button_label': 'Add category'}) }}
+
 
 <a href="{{ path('category_index') }}">
     Retour à la liste des catégories
