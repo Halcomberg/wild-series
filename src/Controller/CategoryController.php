@@ -36,7 +36,7 @@ class CategoryController extends AbstractController
         // Get data from HTTP request
         $form->handleRequest($request);
         // Was the form submitted ?
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // Deal with the submitted data
             // For example : persiste & flush the entity
             $entityManager->persist($category);
@@ -78,12 +78,6 @@ class CategoryController extends AbstractController
     #[Route('/{category}', methods: ['GET'], requirements: ['id'=>'\d+'], name: 'show')]
     public function show(Category $category): Response
     {
-        if (!$category) {
-            throw $this->createNotFoundException(
-                'No category with id : '.$id.' found in category\'s table.'
-            );
-        }
-
         return $this->render('category/show.html.twig', ['category' => $category]);
     }
 
@@ -108,10 +102,10 @@ class CategoryController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
-        // if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->get('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
-        // }
+        }
 
         return $this->redirectToRoute('category_index', [], Response::HTTP_SEE_OTHER);
     }
