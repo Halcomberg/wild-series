@@ -42,7 +42,9 @@ class ProgramController extends AbstractController
             // Deal with the submitted data
             // For example : persiste & flush the entity
             $entityManager->persist($program);
-            $entityManager->flush();            
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'The new program has been created');
     
             // Redirect to categories list
             return $this->redirectToRoute('program_index');
@@ -76,6 +78,8 @@ class ProgramController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'The program has been modified');
+
             return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -91,6 +95,7 @@ class ProgramController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$program->getId(), $request->getPayload()->get('_token'))) {
             $entityManager->remove($program);
             $entityManager->flush();
+            $this->addFlash('danger', 'The program has been deleted');
         }
 
         return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
