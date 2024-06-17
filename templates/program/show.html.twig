@@ -9,6 +9,14 @@
             <h1>Programme N°{{ program.id }} - {{ program.title }}</h1>
             <p>{{ program.synopsis }}</p>
             <p>Catégorie {{ program.category.name|capitalize }}</p>
+            <strong>Acteurs :</strong>
+            <ul>
+                {% for actor in program.actors %}
+                    <li><a href="{{ path('actor_show', { id: actor.id }) }}">{{ actor.name }}</a></li>
+                {% else %}
+                    <li>Aucun acteur pour cette série</li>
+                {% endfor %}
+            </ul>
         </div>
         <div>
             <h2>Liste des saisons pour {{ program.title }} :</h2>
@@ -17,7 +25,7 @@
                 <p>{{ season.description }}</p>
                 <a href="{{ path('program_season_show', { program: program.id, season: season.id }) }}">Voir les épisodes de la saison {{ season.number }}</a>
             {% endfor %}
-        </div>
+        </div>       
     </article>
 
             {{ include('program/_delete_form.html.twig') }}
