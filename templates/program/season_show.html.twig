@@ -11,9 +11,9 @@
         Liste des épisodes : <br>
         {% for episode in season.episodes %}
             <h4>Episode {{ episode.number }} - {{ episode.title }}</h4>
-            <a href="{{ path('program_episode_show', { program: program.id, season: season.id, episode: episode.id }) }}">Détail de l'épisode {{ episode.number }}</a>            
+            <a href="{{ path('program_episode_show', { programSlug: program.slug, number: season.number, episodeSlug: episode.slug }) }}">Détail de l'épisode {{ episode.number }}</a>            
         {% endfor %}
-        <a href="{{ path('program_show', { program: program.id }) }}">Revenir à la liste des saisons</a>
+        <a href="{{ path('program_show', { slug: program.slug }) }}">Revenir à la liste des saisons</a>
     </article>
 
 {% endblock %}

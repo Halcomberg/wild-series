@@ -7,9 +7,18 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Faker\Factory;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class EpisodeFixtures extends Fixture implements DependentFixtureInterface
 {
+    private SluggerInterface $slugger;
+
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+
+    }
+
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create();
@@ -24,7 +33,10 @@ class EpisodeFixtures extends Fixture implements DependentFixtureInterface
                     $episode->setTitle($faker->words(3, true));
                     $episode->setNumber($k);
                     $episode->setSynopsis($faker->paragraphs(3, true));
-                    $episode->setSeason($seasonReference);                
+                    $episode->setSeason($seasonReference);
+                    $slug = $this->slugger->slug($episode->getTitle());
+                    $episode->setSlug($slug);
+                    $episode->setDuration($faker->numberBetween(40, 60));
                     $manager->persist($episode);
                 }
             }
