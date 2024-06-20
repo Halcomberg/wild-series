@@ -6,10 +6,10 @@
 <h1>Index des séries :</h1>
     {% for program in programs %}
         <div>
-            <h2>{{ loop.index }} / {{ program.title|capitalize }} - Catégorie : <a href="{{ path('category_show', { category: program.category.id }) }}">{{ program.category.name|capitalize|default('Aucune catégorie attribuée') }}</a></h2>
+            <h2>{{ loop.index }} / {{ program.title|capitalize }} - Catégorie : <a href="{{ path('category_show', { slug: program.category.slug }) }}">{{ program.category.name|capitalize|default('Aucune catégorie attribuée') }}</a></h2>
             <img src="{{ program.poster }}" alt="{{ program.title }}" width=10% height=10%>
             <p>{{ program.synopsis }}</p>
-            <a href="{{ path('program_show', { program: program.id }) }}">Voir la fiche</a>
+            <a href="{{ path('program_show', { slug: program.slug }) }}">Voir la fiche</a>
         </div>
     {% else %}
         Auncune série trouvée.

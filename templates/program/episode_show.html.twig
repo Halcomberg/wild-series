@@ -9,9 +9,11 @@
         Saison n°{{ season.number }} <br>
         Episode n° {{ episode.number }} : {{ episode.title }}<br>
         Résumé :<br>
-        {{ episode.synopsis }}
+        {{ episode.synopsis }}<br>
+        Durée :<br>
+        {{ episode.duration }} minutes
         <br>
-        <a href="{{ path('program_season_show', { program: program.id, season: season.id }) }}">Revenir à la liste des épisodes</a>
+        <a href="{{ path('program_season_show', { slug: program.slug, number: season.number }) }}">Revenir à la liste des épisodes</a>
     </article>
 
 {% endblock %}

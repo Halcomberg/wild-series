@@ -11,7 +11,7 @@ use App\Repository\ProgramRepository;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use Doctrine\ORM\EntityManagerInterface;
-
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/category', name: 'category_')]
 class CategoryController extends AbstractController
@@ -27,7 +27,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/new', name: 'new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         // Create a new Category Object
         $category = new Category();
@@ -39,6 +39,8 @@ class CategoryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Deal with the submitted data
             // For example : persiste & flush the entity
+            $slug = $slugger->slug($category->getName());
+            $category->setSlug($slug);
             $entityManager->persist($category);
             $entityManager->flush();            
     
@@ -75,19 +77,20 @@ class CategoryController extends AbstractController
     //     return $this->render('category/show.html.twig', ['category' => $category, 'programs' => $programs]);
     // }
 
-    #[Route('/{category}', methods: ['GET'], requirements: ['id'=>'\d+'], name: 'show')]
+    #[Route('/{slug}', methods: ['GET'], requirements: ['id'=>'\d+'], name: 'show')]
     public function show(Category $category): Response
     {
         return $this->render('category/show.html.twig', ['category' => $category]);
     }
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Category $category, EntityManagerInterface $entityManager): Response
+    #[Route('/{slug}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Category $category, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugger->slug($category->getName());
+            $category->setSlug($slug);
             $entityManager->flush();
 
             return $this->redirectToRoute('category_index', [], Response::HTTP_SEE_OTHER);

@@ -10,6 +10,7 @@ use App\Repository\ActorRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/actor', name: 'actor_')]
 class ActorController extends AbstractController
@@ -23,12 +24,13 @@ class ActorController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $actor = new Actor();
         $form = $this->createForm(ActorType::class, $actor);
         $form->handleRequest($request);
-
+        $slug = $slugger->slug($actor->getName());
+        $actor->setSlug($slug);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($actor);
             $entityManager->flush();
@@ -45,7 +47,7 @@ class ActorController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{slug}', name: 'show', methods: ['GET'])]
     public function show(Actor $actor): Response
     {
         return $this->render('actor/show.html.twig', [
@@ -53,12 +55,13 @@ class ActorController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Actor $actor, EntityManagerInterface $entityManager): Response
+    #[Route('/{slug}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Actor $actor, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(ActorType::class, $actor);
         $form->handleRequest($request);
-
+        $slug = $slugger->slug($actor->getName());
+        $actor->setSlug($slug);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 

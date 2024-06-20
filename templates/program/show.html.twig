@@ -12,18 +12,19 @@
             <strong>Acteurs :</strong>
             <ul>
                 {% for actor in program.actors %}
-                    <li><a href="{{ path('actor_show', { id: actor.id }) }}">{{ actor.name }}</a></li>
+                    <li><a href="{{ path('actor_show', { slug: actor.slug }) }}">{{ actor.name }}</a></li>
                 {% else %}
                     <li>Aucun acteur pour cette série</li>
                 {% endfor %}
             </ul>
+            <p>Durée de visionnage totale de la série : {{ programDuration.jours }} jours {{ programDuration.heures }} heures {{ programDuration.minutes }} minutes</p>
         </div>
         <div>
             <h2>Liste des saisons pour {{ program.title }} :</h2>
             {% for season in program.seasons %}
                 <h4>Saison {{ season.number }} - {{ season.year }}</h4>
                 <p>{{ season.description }}</p>
-                <a href="{{ path('program_season_show', { program: program.id, season: season.id }) }}">Voir les épisodes de la saison {{ season.number }}</a>
+                <a href="{{ path('program_season_show', { slug: program.slug, number: season.number }) }}">Voir les épisodes de la saison {{ season.number }}</a>
             {% endfor %}
         </div>       
     </article>

@@ -7,9 +7,18 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 //Tout d'abord nous ajoutons la classe Factory de FakerPhp
 use Faker\Factory;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class CategoryFixtures extends Fixture
 {
+    private SluggerInterface $slugger;
+
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+
+    }
+    
     // const CATEGORIES = [
     //     'Action',
     //     'Aventure',
@@ -35,7 +44,8 @@ class CategoryFixtures extends Fixture
             $category = new Category();
             //Ce Faker va nous permettre d'alimenter l'instance de Category que l'on souhaite ajouter en base
             $category->setName($faker->word());
-
+            $slug = $this->slugger->slug($category->getName());
+            $category->setSlug($slug);
             $manager->persist($category);
             // Ici, on crée une référence à l'objet $category sous la forme 'category_1', 'category_2'...
             $this->addReference('category_' . $i, $category);
